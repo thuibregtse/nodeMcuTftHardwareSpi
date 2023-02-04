@@ -44,6 +44,7 @@ float p = 3.1415926;
 void testMyGraphics(uint16_t color) {
   tft.fillScreen(ST7735_BLACK);
   tft.fillCircle(64, 64, 60, ST7735_RED);
+  tft.drawRect(0,0, 40,40, ST7735_YELLOW);
 
 }
 
