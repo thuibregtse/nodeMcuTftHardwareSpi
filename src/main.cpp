@@ -1,33 +1,24 @@
+
 #include <Arduino.h>
 
-
-
-/***************************************************
-  This is a library for the Adafruit 1.8" SPI display.
-
-This library works with the Adafruit 1.8" TFT Breakout w/SD card
-  ----> http://www.adafruit.com/products/358
-The 1.8" TFT shield
-  ----> https://www.adafruit.com/product/802
-The 1.44" TFT breakout
-  ----> https://www.adafruit.com/product/2088
-as well as Adafruit raw 1.8" TFT display
-  ----> http://www.adafruit.com/products/618
-
-  Check out the links above for our tutorials and wiring diagrams
-  These displays use SPI to communicate, 4 or 5 pins are required to
-  interface (RST is optional)
-  Adafruit invests time and resources providing this open source code,
-  please support Adafruit and open-source hardware by purchasing
-  products from Adafruit!
-
-  Written by Limor Fried/Ladyada for Adafruit Industries.
-  MIT license, all text above must be included in any redistribution
- ****************************************************/
 
 #include <Adafruit_GFX.h>    // Core graphics library
 #include <Adafruit_ST7735.h> // Hardware-specific library
 #include <SPI.h>
+#include <bitmaps.h>
+
+
+
+// Settings that work with NodeMCU hardware SPI
+#define TFT_CS     D0 // D1 //10
+#define TFT_RST    D1 // 9  // you can also connect this to the Arduino reset
+#define TFT_DC     D3  // 8
+#define TFT_SCLK D5   // set these to be whatever pins you like!
+#define TFT_MOSI D7   // set these to be whatever pins you like!
+
+#include <Arduino.h>
+
+
 
 
 // Settings that work with NodeMCU hardware SPI
@@ -45,6 +36,7 @@ void testMyGraphics(uint16_t color) {
   tft.fillScreen(ST7735_BLACK);
   tft.fillCircle(64, 64, 60, ST7735_RED);
   tft.drawRect(0,0, 40,40, ST7735_YELLOW);
+  tft.drawBitmap (40,40,spider, 48,48, ST7735_CYAN);
 
 }
 
@@ -141,6 +133,34 @@ void testdrawcircles(uint8_t radius, uint16_t color) {
     }
   }
 }
+
+void drawGauge() {
+  tft.setTextSize(2);
+  tft.setTextColor(ST7735_YELLOW);
+  tft.setCursor (64, 64);
+  tft.print ("Hi from Tom");
+  delay (1000);
+}
+
+void drawValve() {
+  tft.fillRect(2, 16, 118,64, ST7735_BLUE);
+  tft.setTextSize(2);
+  tft.setTextColor(ST7735_YELLOW);
+  tft.setCursor (36,100);
+  tft.print ("Closed");
+
+  tft.fillRect (58,16,4,62, ST7735_WHITE);
+
+tft.setRotation(1);
+tft.fillRect (58,16,4,62, ST7735_RED);
+
+
+;
+
+  delay (10000);
+}
+
+
 
 void testtriangles() {
   tft.fillScreen(ST7735_BLACK);
@@ -266,58 +286,58 @@ void setup(void) {
   delay(500);
 
   testMyGraphics(ST7735_BLUE);
-  delay (5000);
+  //delay (5000);
 
   // large block of text
   tft.fillScreen(ST7735_BLACK);
  // testdrawtext("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur adipiscing ante sed nibh tincidunt feugiat. Maecenas enim massa, fringilla sed malesuada et, malesuada sit amet turpis. Sed porttitor neque ut ante pretium vitae malesuada nunc bibendum. Nullam aliquet ultrices massa eu hendrerit. Ut sed nisi lorem. In vestibulum purus a tortor imperdiet posuere. ", ST7735_WHITE);
-  testdrawtext("BELLOW MINIONS!", ST7735_CYAN);
-  delay(1000);
+  //testdrawtext("BELLOW MINIONS!", ST7735_CYAN);
+  //delay(1000);
 
   // tft print function!
-  tftPrintTest();
-  delay(4000);
+  //tftPrintTest();
+  //delay(4000);
 
   // a single pixel
-  tft.drawPixel(tft.width()/2, tft.height()/2, ST7735_GREEN);
-  delay(500);
+  //tft.drawPixel(tft.width()/2, tft.height()/2, ST7735_GREEN);
+  //delay(500);
 
   // line draw test
-  testlines(ST7735_RED);
+  //testlines(ST7735_RED);
+  drawValve();
   delay(500);
 
   // optimized lines
-  testfastlines(ST7735_RED, ST7735_BLUE);
-  delay(500);
+ // testfastlines(ST7735_RED, ST7735_BLUE);
+ // delay(500);
 
-  testdrawrects(ST7735_GREEN);
-  delay(500);
+ // testdrawrects(ST7735_GREEN);
+ // delay(500);
 
  // testfillrects(ST7735_BLUE, ST7735_MAGENTA);
  // delay(500);
 
-  tft.fillScreen(ST7735_BLACK);
-  testfillcircles(10, ST7735_BLUE);
-  testdrawcircles(10, ST7735_WHITE);
-  delay(500);
+ // tft.fillScreen(ST7735_BLACK);
+ // testfillcircles(10, ST7735_BLUE);
+ // testdrawcircles(10, ST7735_WHITE);
+ // delay(500);
 
-//  testroundrects();
+ // testroundrects();
+ // delay(500);
+
+ // testtriangles();
+ // delay(500);
+
+//  mediabuttons();
 //  delay(500);
-
-  testtriangles();
-  delay(500);
-
-  mediabuttons();
-  delay(500);
 
   Serial.println("done");
   delay(1000);
 }
 
 void loop() {
-  tft.invertDisplay(true);
+  //tft.invertDisplay(true);
   delay(500);
-  tft.invertDisplay(false);
+  //tft.invertDisplay(false);
   delay(500);
 }
-
