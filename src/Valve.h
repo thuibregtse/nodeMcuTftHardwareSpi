@@ -14,16 +14,19 @@
 
 // Upper 10 px are for display label
 #define LABEL_H = 10;
+#include <string>
 
 
-class Valve
-{
+
+class Valve {
     
 public:
-    Valve();
-    void open();
-    void close();
+    Valve(const char* displayLabel);
+    void setStatusGraphic(int bitmapIndex);
     int getStatus();
+    char* message;
+    void testGraphics(uint16_t color);
+    void setStatusString (char* statusString); 
 
 private:  
     int _state; // State indicates open, opening, closed, closing

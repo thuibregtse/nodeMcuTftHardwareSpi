@@ -6,6 +6,12 @@
 #include <Adafruit_ST7735.h> // Hardware-specific library
 #include <SPI.h>
 #include <bitmaps.h>
+#include <Valve.h>
+
+#include <iostream>
+#include <fstream>
+#include <string>
+
 
 
 
@@ -147,7 +153,7 @@ void drawValve() {
   tft.setTextSize(2);
   tft.setTextColor(ST7735_YELLOW);
   tft.setCursor (36,100);
-  tft.print ("Closed");
+  //tft.print ("Closed");
 
   tft.fillRect (58,16,4,62, ST7735_WHITE);
 
@@ -261,11 +267,29 @@ void mediabuttons() {
   tft.fillTriangle(42, 20, 42, 60, 90, 40, ST7735_GREEN);
 }
 
-
+char label[20];
 
 void setup(void) {
   Serial.begin(115200);
-  Serial.print("Hello! ST7735 TFT Test");
+  Serial.println("Hello! ST7735 TFT Test");
+
+  strcpy (label, "CrawlSpace");
+  Serial.println("Creating valve");
+  Valve valve1(label);
+  Serial.println("Valve has been created");
+  valve1.setStatusString("Pizzled");
+  delay(10000);
+
+  Serial.println("Opening valve");
+
+  char* foo = valve1.open(); 
+  Serial.print ("Results of valve.open: ");
+  Serial.print (foo);
+
+Serial.println ("Testing object graphics...");
+valve1.testGraphics(ST7735_WHITE);
+
+delay (20000);
 
   // Use this initializer if you're using a 1.8" TFT
   //tft.initR(INITR_BLACKTAB);   // initialize a ST7735S chip, black tab
@@ -286,7 +310,7 @@ void setup(void) {
   delay(500);
 
   testMyGraphics(ST7735_BLUE);
-  //delay (5000);
+  delay (5000);
 
   // large block of text
   tft.fillScreen(ST7735_BLACK);
