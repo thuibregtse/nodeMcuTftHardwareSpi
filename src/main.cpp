@@ -13,6 +13,46 @@
 #include <string>
 
 
+const unsigned char happy[] PROGMEM =
+{ B00000000, B11000000,
+  B00000001, B11000000,
+  B00000001, B11000000,
+  B00000011, B11100000,
+  B11110011, B11100000,
+  B11111110, B11111000,
+  B01111110, B11111111,
+  B00110011, B10011111,
+  B00011111, B11111100,
+  B00001101, B01110000,
+  B00011011, B10100000,
+  B00111111, B11100000,
+  B00111111, B11110000,
+  B01111100, B11110000,
+  B01110000, B01110000,
+  B00000000, B00110000
+};
+
+const unsigned char sad[] PROGMEM = {
+  B00000000, B11000000,
+  B00000000, B11000000,
+  B00000000, B11000000,
+  B00000000, B11100000,
+  B00000000, B11100000,
+  B00000000, B11111000,
+  B00000000, B11111111,
+  B00000000, B10011111,
+  B00000000, B11111100,
+  B00000000, B01110000,
+  B00000000, B10100000,
+  B00000000, B11100000,
+  B00000000, B11110000,
+  B00000000, B11110000,
+  B00000000, B01110000,
+  B00000000, B00110000
+};
+
+
+const unsigned char * const bmp_table[] PROGMEM = {valve, happy, sad};
 
 
 // Settings that work with NodeMCU hardware SPI
@@ -38,6 +78,7 @@ Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS,  TFT_DC, TFT_RST);
 
 float p = 3.1415926;
 
+/*
 void testMyGraphics(uint16_t color) {
   tft.fillScreen(ST7735_BLACK);
   tft.fillCircle(64, 64, 60, ST7735_RED);
@@ -45,6 +86,7 @@ void testMyGraphics(uint16_t color) {
   tft.drawBitmap (40,40,spider, 48,48, ST7735_CYAN);
 
 }
+*/
 
 
 void testlines(uint16_t color) {
@@ -278,83 +320,25 @@ void setup(void) {
   Valve valve1(label);
   Serial.println("Valve has been created");
   valve1.setStatusString("Pizzled");
-  delay(10000);
+  delay(500);
+  valve1.setStatusString("Open");
+  delay(500);
+  valve1.drawBitmap(bmp_table);
 
-  Serial.println("Opening valve");
 
-  char* foo = valve1.open(); 
-  Serial.print ("Results of valve.open: ");
-  Serial.print (foo);
 
-Serial.println ("Testing object graphics...");
-valve1.testGraphics(ST7735_WHITE);
 
-delay (20000);
-
-  // Use this initializer if you're using a 1.8" TFT
-  //tft.initR(INITR_BLACKTAB);   // initialize a ST7735S chip, black tab
-
-  // Use this initializer (uncomment) if you're using a 1.44" TFT
-  tft.initR(INITR_144GREENTAB);   // initialize a ST7735S chip, black tab
-
-  // Use this initializer (uncomment) if you're using a 0.96" 180x60 TFT
-  //tft.initR(INITR_MINI160x80);   // initialize a ST7735S chip, mini display
-
-  Serial.println("Initialized");
 
   uint16_t time = millis();
-  tft.fillScreen(ST7735_BLACK);
+  ////tft.fillScreen(ST7735_BLACK);
   time = millis() - time;
 
   Serial.println(time, DEC);
-  delay(500);
-
-  testMyGraphics(ST7735_BLUE);
-  delay (5000);
-
   // large block of text
-  tft.fillScreen(ST7735_BLACK);
+  ///////tft.fillScreen(ST7735_BLACK);
  // testdrawtext("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur adipiscing ante sed nibh tincidunt feugiat. Maecenas enim massa, fringilla sed malesuada et, malesuada sit amet turpis. Sed porttitor neque ut ante pretium vitae malesuada nunc bibendum. Nullam aliquet ultrices massa eu hendrerit. Ut sed nisi lorem. In vestibulum purus a tortor imperdiet posuere. ", ST7735_WHITE);
   //testdrawtext("BELLOW MINIONS!", ST7735_CYAN);
   //delay(1000);
-
-  // tft print function!
-  //tftPrintTest();
-  //delay(4000);
-
-  // a single pixel
-  //tft.drawPixel(tft.width()/2, tft.height()/2, ST7735_GREEN);
-  //delay(500);
-
-  // line draw test
-  //testlines(ST7735_RED);
-  drawValve();
-  delay(500);
-
-  // optimized lines
- // testfastlines(ST7735_RED, ST7735_BLUE);
- // delay(500);
-
- // testdrawrects(ST7735_GREEN);
- // delay(500);
-
- // testfillrects(ST7735_BLUE, ST7735_MAGENTA);
- // delay(500);
-
- // tft.fillScreen(ST7735_BLACK);
- // testfillcircles(10, ST7735_BLUE);
- // testdrawcircles(10, ST7735_WHITE);
- // delay(500);
-
- // testroundrects();
- // delay(500);
-
- // testtriangles();
- // delay(500);
-
-//  mediabuttons();
-//  delay(500);
-
   Serial.println("done");
   delay(1000);
 }

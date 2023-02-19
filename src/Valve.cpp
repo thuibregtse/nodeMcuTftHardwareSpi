@@ -31,12 +31,10 @@ message = (char*) malloc( strlen(label) * sizeof(char) + 1 );
   cout << message;
 
    tft2.initR(INITR_144GREENTAB);   // initialize a ST7735S chip, black tab
+   tft2.fillScreen(ST7735_WHITE);
    tft2.setTextSize(2); //12x16 for this display
-      
-   // use the length of the string and the display width to calculate cursor start
-
-   tft2.setCursor((64 - (strlen(message) * 6)), 0); //128/2 - strlen/2 * 12
-   //  tft2.setCursor(64 , 0);
+   tft2.setTextColor(ST7735_BLACK); 
+   tft2.setCursor((DISPLAY_W / 2) - (strlen(message) * CHAR_W), 0); //128/2 - strlen/2 * 12
   //tft.setTextColor(color);
   tft2.setTextWrap(true);
   tft2.print(label);
@@ -48,23 +46,31 @@ message = (char*) malloc( strlen(label) * sizeof(char) + 1 );
 
 
 
-void Valve::setStatusString(char* statusString)  {
+void Valve::setStatusString(char* message)  {
 
-      tft2.setCursor((64 - (strlen(statusString) * 6)), 110); //128/2 - strlen/2 * 12
-      tft2.print (statusString);
+  // Clear the previous text rectangle
+      tft2.fillRect(0,DISPLAY_H - CHAR_H,DISPLAY_W, CHAR_H, ST7735_GREEN);
+      tft2.setCursor((DISPLAY_W / 2) - (strlen(message) * CHAR_W), DISPLAY_H - CHAR_H); //128/2 - strlen/2 * 12
+      tft2.setTextColor(ST7735_BLACK);
+      tft2.print (message);
 }
 
-char* Valve::setStatusGraphic(int statusGraphicIndex) {  // Maybe add fg/bg colors
-
-       ;
-       //Serial.println (statusString);
-       return ("Closed");
-}
 
 int Valve::getStatus() {
     return (0);
 }
 
+
+void Valve::drawBitmap(const unsigned char * const bitmap_table[])
+ {
+  tft2.fillRect(0, CHAR_H + 2, DISPLAY_W, DISPLAY_H - CHAR_H - CHAR_H -2, ST7735_WHITE);
+  tft2.drawBitmap(14, CHAR_H + 2, bitmap_table[0], 100,100, ST7735_BLACK);
+ // tft2.fillCircle(64, 64, 60, ST7735_GREEN);
+ // tft2.drawRect(0,0, 40,40, ST7735_YELLOW);
+  //tft2.drawBitmap (40,CHAR_H + 2,spider, 48,48, ST7735_BLACK);
+}
+
+/*
 void Valve::testGraphics(uint16_t color) {
   tft2.fillScreen(ST7735_BLACK);
   tft2.fillCircle(64, 64, 60, ST7735_GREEN);
@@ -72,3 +78,5 @@ void Valve::testGraphics(uint16_t color) {
   tft2.drawBitmap (40,40,spider, 48,48, ST7735_CYAN);
 
 }
+*/
+
