@@ -1,9 +1,11 @@
 
 #include <Arduino.h>
-
+#define SD_CS   D2 // SD card select pin
 
 #include <Adafruit_GFX.h>    // Core graphics library
 #include <Adafruit_ST7735.h> // Hardware-specific library
+#include <Adafruit_ImageReader.h>
+#include <Adafruit_EPD.h>
 #include <SPI.h>
 #include <bitmaps.h>
 #include <Valve.h>
@@ -11,6 +13,18 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+
+#define USE_SD_CARD
+
+
+
+ SdFat                SD;         // SD card filesystem
+ // Adafruit_ImageReader reader(SD); // Image-reader object, pass in SD filesys
+
+//  Adafruit_SPIFlash    flash(&flashTransport);
+  FatVolume        filesys;
+  Adafruit_ImageReader reader(filesys); // Image-reader, pass in flash filesys
+
 
 
 const unsigned char happy[] PROGMEM =
@@ -61,11 +75,6 @@ const unsigned char * const bmp_table[] PROGMEM = {valve, happy, sad};
 #define TFT_DC     D3  // 8
 #define TFT_SCLK D5   // set these to be whatever pins you like!
 #define TFT_MOSI D7   // set these to be whatever pins you like!
-
-#include <Arduino.h>
-
-
-
 
 // Settings that work with NodeMCU hardware SPI
 #define TFT_CS     D0 // D1 //10
@@ -315,19 +324,23 @@ void setup(void) {
   Serial.begin(115200);
   Serial.println("Hello! ST7735 TFT Test");
 
-  strcpy (label, "CrawlSpace");
+  
+  delay(500);
+  if(!SD.begin(SD_CS, SD_SCK_MHZ(10))) { // Breakouts require 10 MHz limit due to longer wires
+    Serial.println(F("SD begin() failed"));
+    for(;;); // Fatal error, do not continue
+  }
+strcpy (label, "CrawlSpace");
   Serial.println("Creating valve");
-  Valve valve1(label);
+  Valve valve1(label, reader);
   Serial.println("Valve has been created");
   valve1.setStatusString("Pizzled");
-  delay(500);
+
+
   valve1.setStatusString("Open");
   delay(500);
-  valve1.drawBitmap(bmp_table);
-
-
-
-
+  valve1.drawRgbBitmap();
+  //valve1.drawBitmap(bmp_table);
 
   uint16_t time = millis();
   ////tft.fillScreen(ST7735_BLACK);
