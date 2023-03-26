@@ -2,7 +2,7 @@
 #define Valve_h
 #include <Arduino.h>
 #include <Adafruit_ImageReader.h>
-
+#include <Adafruit_ST7735.h> 
 
 #define UNKNOWN = 0;
 #define OPENING = 1;
@@ -23,7 +23,7 @@ const int LABEL_H = 10;
 class Valve {
     
 public:
-    Valve(const char* displayLabel, Adafruit_ImageReader reader);
+    Valve(const char* displayLabel);
     void drawBitmap(const unsigned char * const bitmap_table[]);
     void drawRgbBitmap();
     //    void drawRgbBitmap(const uint16_t * const rgb_table[]);
