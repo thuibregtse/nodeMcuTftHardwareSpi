@@ -6,7 +6,7 @@
 #include <Adafruit_GFX.h>    // Core graphics library
 #include <Adafruit_ST7735.h> // Hardware-specific library
 #include <Adafruit_ImageReader.h>
-#include <bitmaps.h>
+//#include <bitmaps.h>
 
 using namespace std;
 
@@ -18,8 +18,8 @@ using namespace std;
 #define TFT_MOSI D7
 
 ImageReturnCode stat; // Status from image-reading functions
-SdFat                SD;         // SD card filesystem
-Adafruit_ImageReader reader(SD); // Image-reader object, pass in SD filesys
+//SdFat                SD;         // SD card filesystem
+//Adafruit_ImageReader reader(SD); // Image-reader object, pass in SD filesys
 
 Adafruit_ST7735      tft    = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RST);
 Adafruit_Image       img;        // An image loaded into RAM
@@ -27,13 +27,14 @@ int32_t              width  = 0, // BMP image dimensions
                      height = 0;
 float p = 3.1415926;
 
-//const uint16_t * PROGMEM valveOpenRGB;
 char message[80];
 //Adafruit_ImageReader reader;
-
+//const unsigned char * const bmp_table[] PROGMEM = {valveicon, happy, sad};
 
 Valve::Valve(const char *label)
 {
+  SdFat                SD;         // SD card filesystem
+  Adafruit_ImageReader reader(SD); // Image-reader object, pass in SD filesys
 
   // strcpy(_label,fileName);
   // Serial.print ("Constructor received a string of ");
@@ -50,7 +51,6 @@ Valve::Valve(const char *label)
   tft.setTextSize(2); // 12x16 for this display
   tft.setTextColor(ST7735_BLACK);
   tft.setCursor((DISPLAY_W / 2) - (strlen(message) * CHAR_W), 0); // 128/2 - strlen/2 * 12
-  // tft.setTextColor(color);
   tft.setTextWrap(true);
   tft.print(label);
 
@@ -60,6 +60,18 @@ Valve::Valve(const char *label)
   }
   Serial.println(F("OK!"));
   delay(5000);
+  
+
+  //!!!! TEST OF reader.drwBMP.  This will be run in drawRgbBitmap, but we'll 
+  //!!!! hard-code a bitmap and try to draw here.
+  //!!!!  When I put the TFT definition in the object, I get this compiler error....
+  //!!!!  It's complaining that it wants an Adaferuit_SPITFT&.   I'm supplying it 
+  //!!!!  with the usual Adafruit_ST7735 (which is derived from SPITFT).
+  //!!!!  My non-OO examples run fine....is there a problem with the TFT being 
+  //!!!!  declared before the object is created??
+
+ // Serial.print(F("Loading lily.bmp to screen..."));
+  stat = reader.drawBMP("/lily.bmp", tft, 0, 0, true);
 }
 
 // From this example: https://stackoverflow.com/questions/28219715/how-do-you-assign-a-string-field-from-a-constructor-in-a-c-class-for-arduino
@@ -75,13 +87,6 @@ void Valve::setStatusString(char* message)  {
       tft.setTextColor(ST7735_BLACK);
       tft.print (message);
 
-  //    Serial.print(F("Loading lily.bmp to screen..."));
-  //    stat = reader.drawBMP("/lily.bmp", tft, 0, 0);
-      Serial.print(F("Loading lily.bmp to screen..."));
-      //stat = reader.drawBMP("/lily.bmp", tft, 0, 0);
- 
-
-      reader.printStatus(stat);   // How'd we do?
 }
 
 
@@ -89,31 +94,26 @@ int Valve::getStatus() {
     return (0);
 }
 
-void Valve::drawBitmap(const unsigned char *const bitmap_table[])
+// Monochrome bitmap
+void Valve::drawBitmap(const unsigned char *const bitmap_table[], unsigned int index)
 {
     tft.fillRect(0, CHAR_H + 2, DISPLAY_W, DISPLAY_H - CHAR_H - CHAR_H - 2, ST7735_WHITE);
-    tft.drawBitmap(14, CHAR_H + 2, bitmap_table[0], 100, 100, ST7735_BLACK);
-
- // tft2.fillCircle(64, 64, 60, ST7735_GREEN);
-
- 
-  tft.drawRect(0,0, 40,40, ST7735_YELLOW);
-  //tft.drawBitmap (40,CHAR_H + 2,spider, 48,48, ST7735_BLACK);
-}
-
-//void Valve::drawRgbBitmap(const uint16_t * const rgb_table[])
-void Valve::drawRgbBitmap()
- {
-  tft.fillRect(0, CHAR_H + 2, DISPLAY_W, DISPLAY_H - CHAR_H - CHAR_H -2, ST7735_WHITE);
-  //stat = reader.drawBMP("/lily.bmp", tft, 0, 0);
-
- // tft.drawBMP(14, CHAR_H + 2, valveOpenRGB, 100,100);
-  tft.fillCircle(64, 64, 60, ST7735_GREEN);
- // tft2.drawRect(0,0, 40,40, ST7735_YELLOW);
-  //tft2.drawBitmap (40,CHAR_H + 2,spider, 48,48, ST7735_BLACK);
+    tft.drawBitmap(14, CHAR_H + 2, bitmap_table[index], 100, 100, ST7735_BLACK);
 }
 
 
+void Valve::drawRgbBitmap(char* imageName)
+{
+    // stat = reader.drawBMP(imageName, tft, 0, 0);
+
+    tft.fillCircle(64, 64, 30, ST7735_BLUE);
+    tft.fillRect(0, CHAR_H + 2, DISPLAY_W, DISPLAY_H - CHAR_H - CHAR_H - 2, ST7735_WHITE);
+
+    //!!!! THIS PART DOESN'T WORK DUE TO TFT CLASS DEFINITION
+    // Serial.print(F("Loading lily.bmp to screen..."));
+    // stat = reader.drawBMP("/lily.bmp", tft, 12, 12)
+    //    reader.printStatus(stat);   // How'd we do?
+}
 
 /*
 void Valve::testGraphics(uint16_t color) {

@@ -17,16 +17,22 @@ const int CHAR_H = 14;
 // Upper 10 px are for display label
 const int LABEL_H = 10;
 #include <string>
+#include <Adafruit_GFX.h>    // Core graphics library
+#include <Adafruit_ST7735.h> // Hardware-specific library
 
+#include <SPI.h>
+#include <bitmaps.h>
+
+
+//const unsigned char * const bmp_table[] PROGMEM = {valve, happy, sad};
 
 
 class Valve {
     
 public:
     Valve(const char* displayLabel);
-    void drawBitmap(const unsigned char * const bitmap_table[]);
-    void drawRgbBitmap();
-    //    void drawRgbBitmap(const uint16_t * const rgb_table[]);
+    void drawBitmap(const unsigned char * const bitmap_table[], unsigned int index);    // Draw monochrome bitmap
+    void drawRgbBitmap(char* imageName);                                           // Draw color bitmap
     int getStatus();
     char* message;
     //void testGraphics(uint16_t color);
