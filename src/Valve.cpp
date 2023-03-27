@@ -69,9 +69,20 @@ Valve::Valve(const char *label)
   //!!!!  with the usual Adafruit_ST7735 (which is derived from SPITFT).
   //!!!!  My non-OO examples run fine....is there a problem with the TFT being 
   //!!!!  declared before the object is created??
+  //!!!! Here's the error message:
+  /*
+  src\Valve.cpp: In constructor 'Valve::Valve(const char*)':
+src\Valve.cpp:74:38: error: cannot convert 'Adafruit_ST7735' to 'Adafruit_SPITFT&'
+   74 |   stat = reader.drawBMP("/lily.bmp", tft, 0, 0, true);
+      |                                      ^~~
+      |                                      |
+      |                                      Adafruit_ST7735
 
  // Serial.print(F("Loading lily.bmp to screen..."));
   stat = reader.drawBMP("/lily.bmp", tft, 0, 0, true);
+
+  END OF ERROR MESSAGE 
+  */
 }
 
 // From this example: https://stackoverflow.com/questions/28219715/how-do-you-assign-a-string-field-from-a-constructor-in-a-c-class-for-arduino
@@ -101,13 +112,15 @@ void Valve::drawBitmap(const unsigned char *const bitmap_table[], unsigned int i
     tft.drawBitmap(14, CHAR_H + 2, bitmap_table[index], 100, 100, ST7735_BLACK);
 }
 
-
+// Doesn't work
 void Valve::drawRgbBitmap(char* imageName)
 {
     // stat = reader.drawBMP(imageName, tft, 0, 0);
 
+// Prove that we can still draw lines, etc to the TFT
+   tft.fillRect(0, CHAR_H + 2, DISPLAY_W, DISPLAY_H - CHAR_H - CHAR_H - 2, ST7735_WHITE);
     tft.fillCircle(64, 64, 30, ST7735_BLUE);
-    tft.fillRect(0, CHAR_H + 2, DISPLAY_W, DISPLAY_H - CHAR_H - CHAR_H - 2, ST7735_WHITE);
+ 
 
     //!!!! THIS PART DOESN'T WORK DUE TO TFT CLASS DEFINITION
     // Serial.print(F("Loading lily.bmp to screen..."));
@@ -115,13 +128,5 @@ void Valve::drawRgbBitmap(char* imageName)
     //    reader.printStatus(stat);   // How'd we do?
 }
 
-/*
-void Valve::testGraphics(uint16_t color) {
-  tft2.fillScreen(ST7735_BLACK);
-  tft2.fillCircle(64, 64, 60, ST7735_GREEN);
-  tft2.drawRect(0,0, 40,40, ST7735_YELLOW);
-  tft2.drawBitmap (40,40,spider, 48,48, ST7735_CYAN);
 
-}
-*/
 
