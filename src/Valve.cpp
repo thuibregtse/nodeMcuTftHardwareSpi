@@ -94,7 +94,7 @@ int Valve::getStatus() {
     return (0);
 }
 
-// Monochrome bitmap
+// Monochrome bitmap - works
 void Valve::drawBitmap(const unsigned char *const bitmap_table[], unsigned int index)
 {
     tft.fillRect(0, CHAR_H + 2, DISPLAY_W, DISPLAY_H - CHAR_H - CHAR_H - 2, ST7735_WHITE);
