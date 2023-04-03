@@ -45,6 +45,8 @@ Valve::Valve(const char *label)
   strcpy(message, label);
   cout << "Copied to ";
   cout << message;
+  ;
+  
 
   tft.initR(INITR_144GREENTAB); // initialize a ST7735S chip, black tab
   tft.fillScreen(ST7735_WHITE);
